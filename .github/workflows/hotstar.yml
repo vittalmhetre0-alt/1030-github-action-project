@@ -1,4 +1,4 @@
-name: Java CI/CD Pipeline to Tomcat
+  name: Java CI/CD Pipeline to Tomcat
 
 on:
   push:
@@ -43,3 +43,10 @@ jobs:
         with:
           name: myapp
 
+      # 6. Deploy WAR via Tomcat Manager
+      - name: Deploy to Tomcat
+        run: |
+          WAR_FILE=$(ls *.war)
+          echo "Deploying $WAR_FILE to Tomcat..."
+          curl -v --upload-file "$WAR_FILE" \
+            "http://${{ secrets.TOMCATUSER }}:${{ secrets.TOMCATPASSWORD }}@${{ secrets.TOMCATHOST }}/manager/text/deploy?path=/myapp&update=true"
